@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import * as SwitchPrimitives from "@radix-ui/react-switch";
-
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 const Switch = React.forwardRef<
@@ -10,6 +10,14 @@ const Switch = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof SwitchPrimitives.Root>
 >(({ className, ...props }, ref) => {
   const [checked, setChecked] = React.useState(false);
+
+  const borderVariants = {
+    unchecked: { x: 0 },
+    checked1: { x: 205 },
+    checked2: { x: 150 },
+    checked3: { x: 100 },
+  };
+
   return (
     <SwitchPrimitives.Root
       className={cn(
@@ -23,10 +31,33 @@ const Switch = React.forwardRef<
       checked={checked}
       onCheckedChange={setChecked}
     >
+      <>
+        <motion.div
+          initial="unchecked"
+          animate={checked ? "checked3" : "unchecked"}
+          variants={borderVariants}
+          className="absolute border-[150px]  rounded-full left-0 opacity-20"
+        ></motion.div>
+        <motion.div
+          initial="unchecked"
+          variants={borderVariants}
+          animate={checked ? "checked2" : "unchecked"}
+          className="absolute border-[125px]  rounded-full left-0 opacity-20"
+        ></motion.div>
+        <motion.div
+          initial="unchecked"
+          variants={borderVariants}
+          animate={checked ? "checked1" : "unchecked"}
+          className="absolute border-[100px]  rounded-full left-0 opacity-20"
+        ></motion.div>
+      </>
+
       <SwitchPrimitives.Thumb
         className={cn(
-          "z-40 pointer-events-none  block h-[140px] w-[140px] rounded-full shadow-lg ring-0 transition-transform duration-500 data-[state=checked]:translate-x-[245px] data-[state=unchecked]:translate-x-3",
-          "data-[state=unchecked]:bg-unchecked-moon data-[state=unchecked]:shadow-[inset_1.81px_2.42px_2.42px_0px_#FEFFED9C,_inset_0px_-5px_2.42px_0px_#B49A2C,_2.42px_4.23px_4.83px_0px_rgba(0,0,0,0.25),_0px_2.42px_2.42px_0px_rgba(0,0,0,0.25)] ",
+          "z-40 pointer-events-none block h-[140px] w-[140px] rounded-full shadow-lg transition-transform duration-400 ",
+          "data-[state=checked]:translate-x-[245px]",
+          "data-[state=unchecked]:translate-x-3",
+          "data-[state=unchecked]:bg-unchecked-moon  data-[state=unchecked]:shadow-[inset_1.81px_2.42px_2.42px_0px_#FEFFED9C,_inset_0px_-5px_2.42px_0px_#B49A2C,_2.42px_4.23px_4.83px_0px_rgba(0,0,0,0.25),_0px_2.42px_2.42px_0px_rgba(0,0,0,0.25)] ",
           "data-[state=checked]:bg-checked-moon data-[state=checked]:shadow-[inset_1.81px_2.42px_2.42px_0px_#FEFFED9C,_inset_0px_-3.02px_2.42px_0px_#373737,_2.42px_4.23px_4.83px_0px_rgba(0,0,0,0.25),_0px_2.42px_2.42px_0px_rgba(0,0,0,0.25)]"
         )}
       >
@@ -38,29 +69,37 @@ const Switch = React.forwardRef<
           </>
         )}
       </SwitchPrimitives.Thumb>
+
       {!checked && (
-        <div className="absolute">
-          <>
-            <svg
-              width="1000"
-              height="174"
-              viewBox="0 0 512 88"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                opacity="0.6"
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M212.654 44.1957C221.814 38.5644 227.922 28.4503 227.922 16.9096C227.922 -0.767545 213.592 -15.0977 195.914 -15.0977C178.237 -15.0977 163.907 -0.767545 163.907 16.9096C163.907 26.0592 167.746 34.3121 173.901 40.1453C173.074 40.9994 172.308 41.9129 171.609 42.8787C168.571 41.3334 165.133 40.4622 161.491 40.4622C150.54 40.4622 141.428 48.341 139.516 58.7397C135.639 54.2062 129.878 51.3326 123.445 51.3326C113.762 51.3326 105.599 57.8443 103.097 66.7278C100.144 64.6385 96.5382 63.4108 92.6455 63.4108C89.0178 63.4108 85.6391 64.477 82.8058 66.3132C79.0895 63.7223 74.5706 62.203 69.6968 62.203C57.0226 62.203 46.7482 72.4775 46.7482 85.1517C46.7482 97.8259 57.0226 108.1 69.6968 108.1C77.1527 108.1 83.7782 104.545 87.97 99.0365C89.4616 99.4338 91.0288 99.6456 92.6455 99.6456C100.253 99.6456 106.766 94.9563 109.451 88.3105C110.435 89.1809 111.501 89.9609 112.636 90.6376C112.595 91.2193 112.575 91.8065 112.575 92.3986C112.575 106.073 123.66 117.159 137.335 117.159C151.01 117.159 162.095 106.073 162.095 92.3986C162.095 89.8754 161.718 87.4403 161.016 85.1467C161.174 85.15 161.333 85.1517 161.491 85.1517C167.987 85.1517 173.836 82.3797 177.919 77.9542C181.856 80.5929 186.592 82.1321 191.687 82.1321C205.362 82.1321 216.447 71.0465 216.447 57.3717C216.447 52.5293 215.057 48.0115 212.654 44.1957ZM23.7995 103.269C36.4737 103.269 46.7482 92.9946 46.7482 80.3204C46.7482 67.6462 36.4737 57.3717 23.7995 57.3717C11.1253 57.3717 0.850861 67.6462 0.850861 80.3204C0.850861 92.9946 11.1253 103.269 23.7995 103.269Z"
-                fill="#F3FDFF"
-              />
-            </svg>
-          </>
-        </div>
+        <motion.div
+          initial={{ y: 200, opacity: 0 }} // Start off-screen and hidden
+          animate={{ y: 0, opacity: 1 }} // Move to its position and fade in
+          // Set the duration for the animation
+          className="absolute z-0"
+        >
+          <svg
+            width="1000"
+            height="174"
+            viewBox="0 0 512 88"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              opacity="0.6"
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M212.654 44.1957C221.814 38.5644 227.922 28.4503 227.922 16.9096C227.922 -0.767545 213.592 -15.0977 195.914 -15.0977C178.237 -15.0977 163.907 -0.767545 163.907 16.9096C163.907 26.0592 167.746 34.3121 173.901 40.1453C173.074 40.9994 172.308 41.9129 171.609 42.8787C168.571 41.3334 165.133 40.4622 161.491 40.4622C150.54 40.4622 141.428 48.341 139.516 58.7397C135.639 54.2062 129.878 51.3326 123.445 51.3326C113.762 51.3326 105.599 57.8443 103.097 66.7278C100.144 64.6385 96.5382 63.4108 92.6455 63.4108C89.0178 63.4108 85.6391 64.477 82.8058 66.3132C79.0895 63.7223 74.5706 62.203 69.6968 62.203C57.0226 62.203 46.7482 72.4775 46.7482 85.1517C46.7482 97.8259 57.0226 108.1 69.6968 108.1C77.1527 108.1 83.7782 104.545 87.97 99.0365C89.4616 99.4338 91.0288 99.6456 92.6455 99.6456C100.253 99.6456 106.766 94.9563 109.451 88.3105C110.435 89.1809 111.501 89.9609 112.636 90.6376C112.595 91.2193 112.575 91.8065 112.575 92.3986C112.575 106.073 123.66 117.159 137.335 117.159C151.01 117.159 162.095 106.073 162.095 92.3986C162.095 89.8754 161.718 87.4403 161.016 85.1467C161.174 85.15 161.333 85.1517 161.491 85.1517C167.987 85.1517 173.836 82.3797 177.919 77.9542C181.856 80.5929 186.592 82.1321 191.687 82.1321C205.362 82.1321 216.447 71.0465 216.447 57.3717C216.447 52.5293 215.057 48.0115 212.654 44.1957ZM23.7995 103.269C36.4737 103.269 46.7482 92.9946 46.7482 80.3204C46.7482 67.6462 36.4737 57.3717 23.7995 57.3717C11.1253 57.3717 0.850861 67.6462 0.850861 80.3204C0.850861 92.9946 11.1253 103.269 23.7995 103.269Z"
+              fill="#F3FDFF"
+            />
+          </svg>
+        </motion.div>
       )}
       {!checked && (
-        <div className="absolute ">
+        <motion.div
+          initial={{ y: 200 }}
+          animate={{ y: 0 }}
+          className="absolute z-0"
+        >
           <svg
             width="1000"
             height="174"
@@ -75,7 +114,7 @@ const Switch = React.forwardRef<
               fill="#F3FDFF"
             />
           </svg>
-        </div>
+        </motion.div>
       )}
       {checked && (
         <>
